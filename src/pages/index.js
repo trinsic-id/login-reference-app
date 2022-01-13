@@ -1,6 +1,8 @@
 import Head from "next/head";
 import Link from 'next/link';
 
+import { api } from '../services/api';
+
 export default function Home() {
   return (
     <>
@@ -40,4 +42,12 @@ export default function Home() {
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { data } = await api.get('/api/hello');
+
+  console.log(data);
+
+  return { props: {} };
 }
