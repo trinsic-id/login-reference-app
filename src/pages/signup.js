@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from 'next/link';
 import { useState } from "react";
-import { Modal, ModalTransition, useModal } from "react-simple-hook-modal";
 import { v4 as uuid } from 'uuid';
+import { Modal, ModalTransition, useModal } from "react-simple-hook-modal";
 
 export default function SignUp() {
   const { isModalOpen, openModal, closeModal } = useModal();
@@ -35,7 +35,7 @@ export default function SignUp() {
         <button className="fixed top-0 right-0 font-bold text-gray-400 hover:brightness-75 p-4" onClick={closeModal}>
           X
         </button>
-        <p>hello, world</p>
+        {/* <img> */}
         <Link href="/">
           <a className="block w-full rounded p-2 text-center bg-blue-600 font-bold text-white transition hover:brightness-90">
             Done
