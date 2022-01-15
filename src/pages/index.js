@@ -45,9 +45,9 @@ export default function Home() {
 }
 
 export async function getServerSideProps(context) {
-  const { data } = await api.get('/api/hello');
+  // const { data } = await api.get('/api/hello');
 
-  console.log(data);
+  // console.log(data);
 
   return { props: {} };
 }
