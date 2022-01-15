@@ -1,17 +1,19 @@
+/* eslint-disable @next/next/no-img-element */
 import Head from "next/head";
 import Link from 'next/link';
 import { useState } from "react";
-import { v4 as uuid } from 'uuid';
 import { Modal, ModalTransition, useModal } from "react-simple-hook-modal";
+
+import { api } from '../services/api';
 
 export default function SignUp() {
   const { isModalOpen, openModal, closeModal } = useModal();
 
   const [credentials, setCredentials] = useState({
-    id: uuid(),
     name: "",
     email: "",
   });
+  const [url, setUrl] = useState('');
 
   function handleChange(event) {
     setCredentials({
@@ -22,7 +24,15 @@ export default function SignUp() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(credentials);
+
+    try {
+      const { data } = await api.post('/api/issue', credentials);
+      setUrl(data.offerUrl);
+    } catch (err) {
+      alert(err.message);
+      return;
+    }
+
     openModal();
   }
 
@@ -35,12 +45,17 @@ export default function SignUp() {
         <button className="fixed top-0 right-0 font-bold text-gray-400 hover:brightness-75 p-4" onClick={closeModal}>
           X
         </button>
-        {/* <img> */}
-        <Link href="/">
-          <a className="block w-full rounded p-2 text-center bg-blue-600 font-bold text-white transition hover:brightness-90">
-            Done
-          </a>
-        </Link>
+        <section className="flex flex-col items-center justify-between">
+          <p className="mb-4 font-bold text-xl">Open your Trinsic Wallet and scan this QR code to save your credential</p>
+
+          <img src={`https://chart.googleapis.com/chart?cht=qr&chl=${url}&chs=300x300&chld=L|1`} alt="issue invite" className="block w-1/2" />
+
+          <Link href="/">
+            <a className="block w-full rounded p-2 text-center bg-blue-600 font-bold text-white transition hover:brightness-90">
+              Done
+            </a>
+          </Link>
+        </section>
       </Modal>
       <div className="w-full h-screen bg-gray-200 flex justify-center items-center">
         <main className="w-1/3 bg-white px-8 py-12 rounded shadow">

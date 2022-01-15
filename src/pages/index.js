@@ -1,8 +1,6 @@
 import Head from "next/head";
 import Link from 'next/link';
 
-import { api } from '../services/api';
-
 export default function Home() {
   return (
     <>
