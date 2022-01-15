@@ -41,11 +41,3 @@ export default function Home() {
     </>
   );
 }
-
-export async function getServerSideProps(context) {
-  // const { data } = await api.get('/api/hello');
-
-  // console.log(data);
-
-  return { props: {} };
-}

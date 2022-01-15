@@ -1,13 +1,14 @@
 import Head from "next/head";
-import Link from 'next/link';
-import { useState } from "react";
+import jwt from 'jsonwebtoken';
+import { useRouter } from "next/router";
 
-export default function SignUp() {
-  const [credentials] = useState({
-    id: "",
-    name: "",
-    email: "",
-  });
+export default function SignUp({ id, email, name }) {
+  const router = useRouter();
+
+  function signout() {
+    localStorage.removeItem('_auth@ssi');
+    router.push('/')
+  }
 
   return (
     <>
@@ -32,7 +33,7 @@ export default function SignUp() {
               <input
                 name="id"
                 type="text"
-                value={credentials.id}
+                value={id}
                 className="block w-full bg-gray-100 rounded p-2 border"
                 disabled
               />
@@ -43,7 +44,7 @@ export default function SignUp() {
               <input
                 name="name"
                 type="text"
-                value={credentials.name}
+                value={name}
                 className="block w-full bg-gray-100 rounded p-2 border"
                 disabled
               />
@@ -54,20 +55,40 @@ export default function SignUp() {
               <input
                 name="email"
                 type="email"
-                value={credentials.email}
+                value={email}
                 className="block w-full bg-gray-100 rounded p-2 border"
                 disabled
               />
             </div>
           </section>
 
-          <Link href="/">
-            <a className="text-blue-600 hover:underline">
-              Sign out
-            </a>
-          </Link>
+          <button className="text-blue-600 hover:underline" onClick={signout}>Sign out</button>
         </main>
       </div>
     </>
   );
+}
+
+export async function getServerSideProps({ params }) {
+  const { token } = params;
+  let decoded;
+
+  try {
+    decoded = jwt.verify(token, 'secretkey');
+  } catch (error) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      id: decoded.AccountID,
+      name: decoded.Name,
+      email: decoded.Email,
+    },
+  };
 }
