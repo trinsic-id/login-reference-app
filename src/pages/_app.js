@@ -2,11 +2,14 @@ import { ModalProvider } from 'react-simple-hook-modal';
 
 import '../styles/globals.css'
 import 'react-simple-hook-modal/dist/styles.css';
+import { AuthProvider } from "../contexts/AuthContext";
 
 function MyApp({ Component, pageProps }) {
   return (
     <ModalProvider>
-      <Component {...pageProps} />
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
     </ModalProvider>
   );
 }

@@ -2,29 +2,21 @@
 import Head from "next/head";
 import Link from 'next/link';
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useContext } from "react";
 
-import { api } from '../services/api';
 import { trinsic } from '../services/trinsic';
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function SignIn({
   verificationRequestUrl,
   verificationId,
 }) {
   const [showQR, setShowQR] = useState(false);
-  const router = useRouter();
+  const { signIn } = useContext(AuthContext);
 
   async function verify() {
     setShowQR(true);
-
-    try {
-      const { data } = await api.post('/api/verify', { verificationId });
-
-      localStorage.setItem('_auth@ssi', `Bearer ${data.token}`);
-      router.push(`/profile/${data.token}`);
-    } catch (err) {
-      console.error(err.message);
-    }
+    await signIn(verificationId);
   }
 
   return (
@@ -67,7 +59,7 @@ export default function SignIn({
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   const {
     verificationRequestUrl,
     verificationId,

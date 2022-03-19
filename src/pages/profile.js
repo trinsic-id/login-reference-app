@@ -1,12 +1,13 @@
 import Head from "next/head";
 import jwt from 'jsonwebtoken';
 import { useRouter } from "next/router";
+import { destroyCookie, parseCookies } from "nookies";
 
 export default function SignUp({ id, email, name }) {
   const router = useRouter();
 
   function signout() {
-    localStorage.removeItem('_auth@ssi');
+    destroyCookie(undefined, 'ssi.token');
     router.push('/')
   }
 
@@ -69,9 +70,10 @@ export default function SignUp({ id, email, name }) {
   );
 }
 
-export async function getServerSideProps({ params }) {
-  const { token } = params;
-  let decoded;
+export async function getServerSideProps(context) {
+  const { ['ssi.token']: token } = parseCookies(context);
+
+  let decoded = null;
 
   try {
     decoded = jwt.verify(token, 'secretkey');
