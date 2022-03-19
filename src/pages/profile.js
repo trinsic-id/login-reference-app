@@ -1,16 +1,13 @@
+import { useContext } from 'react'
 import Head from "next/head";
-import jwt from 'jsonwebtoken';
-import { useRouter } from "next/router";
-import { destroyCookie, parseCookies } from "nookies";
+import { parseCookies } from "nookies";
 
-export default function SignUp({ id, email, name }) {
-  const router = useRouter();
+import { AuthContext } from '../contexts/AuthContext';
+import { api } from '../services/api';
 
-  function signout() {
-    destroyCookie(undefined, 'ssi.token');
-    router.push('/')
-  }
-
+export default function Profile({ user }) {
+  const { signOut } = useContext(AuthContext);
+  
   return (
     <>
       <Head>
@@ -34,7 +31,7 @@ export default function SignUp({ id, email, name }) {
               <input
                 name="id"
                 type="text"
-                value={id}
+                value={user.id}
                 className="block w-full bg-gray-100 rounded p-2 border"
                 disabled
               />
@@ -45,7 +42,7 @@ export default function SignUp({ id, email, name }) {
               <input
                 name="name"
                 type="text"
-                value={name}
+                value={user.name}
                 className="block w-full bg-gray-100 rounded p-2 border"
                 disabled
               />
@@ -56,14 +53,14 @@ export default function SignUp({ id, email, name }) {
               <input
                 name="email"
                 type="email"
-                value={email}
+                value={user.email}
                 className="block w-full bg-gray-100 rounded p-2 border"
                 disabled
               />
             </div>
           </section>
 
-          <button className="text-blue-600 hover:underline" onClick={signout}>Sign out</button>
+          <button className="text-blue-600 hover:underline" onClick={signOut}>Sign out</button>
         </main>
       </div>
     </>
@@ -73,11 +70,7 @@ export default function SignUp({ id, email, name }) {
 export async function getServerSideProps(context) {
   const { ['ssi.token']: token } = parseCookies(context);
 
-  let decoded = null;
-
-  try {
-    decoded = jwt.verify(token, 'secretkey');
-  } catch (error) {
+  if (!token) {
     return {
       redirect: {
         destination: '/',
@@ -86,11 +79,15 @@ export async function getServerSideProps(context) {
     };
   }
 
+  const { data } = await api.get('/api/user', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  
   return {
     props: {
-      id: decoded.AccountID,
-      name: decoded.Name,
-      email: decoded.Email,
-    },
+      user: data.user
+    }
   };
 }

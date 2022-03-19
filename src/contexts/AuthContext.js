@@ -9,7 +9,6 @@ const SECONDS_IN_AN_HOUR = 3600;
 export const AuthContext = createContext({})
 
 export function AuthProvider({ children }) {
-
   async function signIn(verificationId) {
     const { data: { token } } = await api.post('/api/verify', { verificationId });
 
@@ -22,8 +21,13 @@ export function AuthProvider({ children }) {
     Router.push('/profile');
   }
 
+  async function signOut() {
+    destroyCookie(undefined, 'ssi.token');
+    Router.push('/')
+  }
+
   return (
-    <AuthContext.Provider value={{ signIn }}>
+    <AuthContext.Provider value={{ signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )
