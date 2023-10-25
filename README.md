@@ -1,3 +1,7 @@
+| :exclamation:  This reference app is for our legacy platform. Go to https://docs.trinsic.id/examples for an overview of updated examples   |
+|-----------------------------------------|
+
+
 # Trinsic's Login Reference App
 
 A sample application to showcase how Trinsic Studio features to implement a passwordless login use case. Trinsic utilizes Self-sovereign identity and verifiable credentials to protect and ensure credibility of everyone's online identity.
